@@ -1,0 +1,250 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 600px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 600px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "id": "Amico\u0027S Family", "label": "Amico\u0027S Family", "shape": "dot", "size": 10, "title": "Culinary empire"}, {"color": "#97c2fc", "id": "Restaurant", "label": "Restaurant", "shape": "dot", "size": 10, "title": "Place"}, {"color": "#97c2fc", "id": "Other Restaurant", "label": "Other Restaurant", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Culinaryheritagefamily", "label": "Culinaryheritagefamily", "shape": "dot", "size": 10, "title": "Simplenode"}, {"color": "#97c2fc", "id": "Gourmetchef", "label": "Gourmetchef", "shape": "dot", "size": 10, "title": "Simplenode"}, {"color": "#97c2fc", "id": "Historicland", "label": "Historicland", "shape": "dot", "size": 10, "title": "Simplenode"}, {"color": "#97c2fc", "id": "Food", "label": "Food", "shape": "dot", "size": 10, "title": "Food"}, {"color": "#97c2fc", "id": "Deepseatedloveforfood", "label": "Deepseatedloveforfood", "shape": "dot", "size": 10, "title": "Relationship"}, {"color": "#97c2fc", "id": "Giovanni Caruso", "label": "Giovanni Caruso", "shape": "dot", "size": 10, "title": "Person"}, {"color": "#97c2fc", "id": "Amico", "label": "Amico", "shape": "dot", "size": 10, "title": "Community"}, {"color": "#97c2fc", "id": "Maria", "label": "Maria", "shape": "dot", "size": 10, "title": "Person"}, {"color": "#97c2fc", "id": "Giovanni", "label": "Giovanni", "shape": "dot", "size": 10, "title": "Person"}, {"color": "#97c2fc", "id": "Antonio", "label": "Antonio", "shape": "dot", "size": 10, "title": "Person"}, {"color": "#97c2fc", "id": "Pietroandsofia", "label": "Pietroandsofia", "shape": "dot", "size": 10, "title": "Family"}, {"color": "#97c2fc", "id": "Nonnalucia", "label": "Nonnalucia", "shape": "dot", "size": 10, "title": "Person"}, {"color": "#97c2fc", "id": "Grandchildren", "label": "Grandchildren", "shape": "dot", "size": 10, "title": "Child"}, {"color": "#97c2fc", "id": "Communityinvolvement", "label": "Communityinvolvement", "shape": "dot", "size": 10, "title": "Socialcause"}, {"color": "#97c2fc", "id": "Siciliankitchen", "label": "Siciliankitchen", "shape": "dot", "size": 10, "title": "Culinaryart"}, {"color": "#97c2fc", "id": "Siciliankitchens", "label": "Siciliankitchens", "shape": "dot", "size": 10, "title": "Culinaryart"}, {"color": "#97c2fc", "id": "Village", "label": "Village", "shape": "dot", "size": 10, "title": "Place"}, {"color": "#97c2fc", "id": "Wedding", "label": "Wedding", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "La Dolce Vita", "label": "La Dolce Vita", "shape": "dot", "size": 10, "title": "Restaurant"}, {"color": "#97c2fc", "id": "Caruso Family", "label": "Caruso Family", "shape": "dot", "size": 10, "title": "Family"}, {"color": "#97c2fc", "id": "Grandfeast", "label": "Grandfeast", "shape": "dot", "size": 10, "title": "Event"}, {"color": "#97c2fc", "id": "Dishcreation", "label": "Dishcreation", "shape": "dot", "size": 10, "title": "Action"}, {"color": "#97c2fc", "id": "Signaturestyle", "label": "Signaturestyle", "shape": "dot", "size": 10, "title": "Concept"}, {"color": "#97c2fc", "id": "Pietro", "label": "Pietro", "shape": "dot", "size": 10, "title": "Person"}, {"color": "#97c2fc", "id": "Sofia", "label": "Sofia", "shape": "dot", "size": 10, "title": "Person"}, {"color": "#97c2fc", "id": "Tiramisu", "label": "Tiramisu", "shape": "dot", "size": 10, "title": "Dessert"}, {"color": "#97c2fc", "id": "Pannacotta", "label": "Pannacotta", "shape": "dot", "size": 10, "title": "Dessert"}, {"color": "#97c2fc", "id": "Sicilianculture", "label": "Sicilianculture", "shape": "dot", "size": 10, "title": "Microcosm"}, {"color": "#97c2fc", "id": "Beyondthekitchen", "label": "Beyondthekitchen", "shape": "dot", "size": 10, "title": "Simplenode"}, {"color": "#97c2fc", "id": "Shewasapillarofstrengthandwisdom", "label": "Shewasapillarofstrengthandwisdom", "shape": "dot", "size": 10, "title": "Simplenode"}, {"color": "#97c2fc", "id": "Teachinglessonsaboutlifeloveandtheimportanceofcommunity", "label": "Teachinglessonsaboutlifeloveandtheimportanceofcommunity", "shape": "dot", "size": 10, "title": "Simplenode"}, {"color": "#97c2fc", "id": "Guidingherfamilywithloveandafirmhand", "label": "Guidingherfamilywithloveandafirmhand", "shape": "dot", "size": 10, "title": "Simplenode"}, {"color": "#97c2fc", "id": "Culinary Empire", "label": "Culinary Empire", "shape": "dot", "size": 10, "title": "Empire"}, {"color": "#97c2fc", "id": "Santa Caterina Village", "label": "Santa Caterina Village", "shape": "dot", "size": 10, "title": "Village"}, {"color": "#97c2fc", "id": "New York City", "label": "New York City", "shape": "dot", "size": 10, "title": "City"}, {"color": "#97c2fc", "id": "Food Power", "label": "Food Power", "shape": "dot", "size": 10, "title": "Concept"}, {"color": "#97c2fc", "id": "Tradition", "label": "Tradition", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Innovation", "label": "Innovation", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Italiancuisineestablishment", "label": "Italiancuisineestablishment", "shape": "dot", "size": 10, "title": "Restaurant"}, {"color": "#97c2fc", "id": "Diverseofferings", "label": "Diverseofferings", "shape": "dot", "size": 10, "title": "Category"}, {"color": "#97c2fc", "id": "La_Dolce_Vita", "label": "La_Dolce_Vita", "shape": "dot", "size": 10, "title": "Movie"}, {"color": "#97c2fc", "id": "Rome", "label": "Rome", "shape": "dot", "size": 10, "title": "City"}, {"color": "#97c2fc", "id": "Il_Mare_Nostrum", "label": "Il_Mare_Nostrum", "shape": "dot", "size": 10, "title": "Hotel"}, {"color": "#97c2fc", "id": "Amalfi_Coast", "label": "Amalfi_Coast", "shape": "dot", "size": 10, "title": "Location"}, {"color": "#97c2fc", "id": "Vongole", "label": "Vongole", "shape": "dot", "size": 10, "title": "Food"}, {"color": "#97c2fc", "id": "Il Mare Nostrum", "label": "Il Mare Nostrum", "shape": "dot", "size": 10, "title": "Restaurant"}, {"color": "#97c2fc", "id": "Tuscany", "label": "Tuscany", "shape": "dot", "size": 10, "title": "Territory"}, {"color": "#97c2fc", "id": "Sofia Caruso", "label": "Sofia Caruso", "shape": "dot", "size": 10, "title": "Person"}, {"color": "#97c2fc", "id": "Tuscancuisine", "label": "Tuscancuisine", "shape": "dot", "size": 10, "title": "Cuisine"}, {"color": "#97c2fc", "id": "Bisteccaallafiorentina", "label": "Bisteccaallafiorentina", "shape": "dot", "size": 10, "title": "Dish"}, {"color": "#97c2fc", "id": "Pappardellealcinghiale", "label": "Pappardellealcinghiale", "shape": "dot", "size": 10, "title": "Dish"}, {"color": "#97c2fc", "id": "New York", "label": "New York", "shape": "dot", "size": 10, "title": "City"}, {"color": "#97c2fc", "id": "Dining Scene", "label": "Dining Scene", "shape": "dot", "size": 10, "title": "Category"}, {"color": "#97c2fc", "id": "Restaurants", "label": "Restaurants", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Communityinitiative", "label": "Communityinitiative", "shape": "dot", "size": 10, "title": "Community initiative"}, {"color": "#97c2fc", "id": "Culturalexchangeprogram", "label": "Culturalexchangeprogram", "shape": "dot", "size": 10, "title": "Cultural exchange program"}, {"color": "#97c2fc", "id": "Culinaryworkshop", "label": "Culinaryworkshop", "shape": "dot", "size": 10, "title": "Simplenode"}, {"color": "#97c2fc", "id": "Mentorshipprogram", "label": "Mentorshipprogram", "shape": "dot", "size": 10, "title": "Simplenode"}, {"color": "#97c2fc", "id": "Family", "label": "Family", "shape": "dot", "size": 10, "title": "Culturalinstitution"}, {"color": "#97c2fc", "id": "Mentorshipprograms", "label": "Mentorshipprograms", "shape": "dot", "size": 10, "title": "Mentorshipprograms"}, {"color": "#97c2fc", "id": "Establishment", "label": "Establishment", "shape": "dot", "size": 10, "title": "Simplenode"}, {"color": "#97c2fc", "id": "Localtalent", "label": "Localtalent", "shape": "dot", "size": 10, "title": "Artist"}, {"color": "#97c2fc", "id": "Sustainability", "label": "Sustainability", "shape": "dot", "size": 10, "title": "Simplenode"}, {"color": "#97c2fc", "id": "Economic_Sustainability", "label": "Economic_Sustainability", "shape": "dot", "size": 10, "title": "Simplenode"}, {"color": "#97c2fc", "id": "Seasonal Produce", "label": "Seasonal Produce", "shape": "dot", "size": 10, "title": "Food"}, {"color": "#97c2fc", "id": "Organic Produce", "label": "Organic Produce", "shape": "dot", "size": 10, "title": "Food"}, {"color": "#97c2fc", "id": "Communitykitchens", "label": "Communitykitchens", "shape": "dot", "size": 10, "title": "Food"}, {"color": "#97c2fc", "id": "Foodforallinitiative", "label": "Foodforallinitiative", "shape": "dot", "size": 10, "title": "Organization"}, {"color": "#97c2fc", "id": "Caruso", "label": "Caruso", "shape": "dot", "size": 10, "title": "Person"}, {"color": "#97c2fc", "id": "Contributingskill", "label": "Contributingskill", "shape": "dot", "size": 10, "title": "Simplenode"}, {"color": "#97c2fc", "id": "Resources", "label": "Resources", "shape": "dot", "size": 10, "title": "Simplenode"}, {"color": "#97c2fc", "id": "Cultural_Festival", "label": "Cultural_Festival", "shape": "dot", "size": 10, "title": "Cultural_festival"}, {"color": "#97c2fc", "id": "Festive_Event", "label": "Festive_Event", "shape": "dot", "size": 10, "title": "Festive_event"}, {"color": "#97c2fc", "id": "Carusos", "label": "Carusos", "shape": "dot", "size": 10, "title": "Simplenode"}, {"color": "#97c2fc", "id": "Culturalfestival", "label": "Culturalfestival", "shape": "dot", "size": 10, "title": "Simplenode"}, {"color": "#97c2fc", "id": "Culinaryfestival", "label": "Culinaryfestival", "shape": "dot", "size": 10, "title": "Simplenode"}, {"color": "#97c2fc", "id": "Cuisine", "label": "Cuisine", "shape": "dot", "size": 10, "title": "Cuisine"}, {"color": "#97c2fc", "id": "Festival", "label": "Festival", "shape": "dot", "size": 10, "title": "Event"}, {"color": "#97c2fc", "id": "Liveperformance", "label": "Liveperformance", "shape": "dot", "size": 10, "title": "Activity"}, {"color": "#97c2fc", "id": "Cookingdemonstration", "label": "Cookingdemonstration", "shape": "dot", "size": 10, "title": "Activity"}, {"color": "#97c2fc", "id": "Artisanmarket", "label": "Artisanmarket", "shape": "dot", "size": 10, "title": "Activity"}, {"color": "#97c2fc", "id": "Background", "label": "Background", "shape": "dot", "size": 10, "title": "Background"}, {"color": "#97c2fc", "id": "Community", "label": "Community", "shape": "dot", "size": 10, "title": "Community"}, {"color": "#97c2fc", "id": "Localartist", "label": "Localartist", "shape": "dot", "size": 10, "title": "Artisan"}, {"color": "#97c2fc", "id": "Artisan", "label": "Artisan", "shape": "dot", "size": 10, "title": "Artisan"}, {"color": "#97c2fc", "id": "Visualarts", "label": "Visualarts", "shape": "dot", "size": 10, "title": "Artform"}, {"color": "#97c2fc", "id": "Musiciansandperformers", "label": "Musiciansandperformers", "shape": "dot", "size": 10, "title": "Artist"}, {"color": "#97c2fc", "id": "Familymember1", "label": "Familymember1", "shape": "dot", "size": 10, "title": "Simplenode"}, {"color": "#97c2fc", "id": "Background1", "label": "Background1", "shape": "dot", "size": 10, "title": "Simplenode"}, {"color": "#97c2fc", "id": "Talents1", "label": "Talents1", "shape": "dot", "size": 10, "title": "Simplenode"}, {"color": "#97c2fc", "id": "John Doe", "label": "John Doe", "shape": "dot", "size": 10, "title": "Person"}, {"color": "#97c2fc", "id": "Antoniocaruso", "label": "Antoniocaruso", "shape": "dot", "size": 10, "title": "Person"}, {"color": "#97c2fc", "id": "Joyoffeedingothers", "label": "Joyoffeedingothers", "shape": "dot", "size": 10, "title": "Concept"}, {"color": "#97c2fc", "id": "Nonna Lucia", "label": "Nonna Lucia", "shape": "dot", "size": 10, "title": "Matriarch"}, {"color": "#97c2fc", "id": "Terradisiena", "label": "Terradisiena", "shape": "dot", "size": 10, "title": "Restaurant"}, {"color": "#97c2fc", "id": "Amicocaruso", "label": "Amicocaruso", "shape": "dot", "size": 10, "title": "Person"}, {"color": "#97c2fc", "id": "4. Amico\u0027S - New York City", "label": "4. Amico\u0027S - New York City", "shape": "dot", "size": 10, "title": "Place"}, {"color": "#97c2fc", "id": "Porcinimushroomrisotto", "label": "Porcinimushroomrisotto", "shape": "dot", "size": 10, "title": "Dish"}, {"color": "#97c2fc", "id": "Burratawithheirloomtomatoes", "label": "Burratawithheirloomtomatoes", "shape": "dot", "size": 10, "title": "Dish"}, {"color": "#97c2fc", "id": "Bellavita", "label": "Bellavita", "shape": "dot", "size": 10, "title": "Restaurant"}, {"color": "#97c2fc", "id": "Luciacaruso", "label": "Luciacaruso", "shape": "dot", "size": 10, "title": "Person"}, {"color": "#97c2fc", "id": "Bella_Vita", "label": "Bella_Vita", "shape": "dot", "size": 10, "title": "Hub"}, {"color": "#97c2fc", "id": "Farm-To-Table Initiatives", "label": "Farm-To-Table Initiatives", "shape": "dot", "size": 10, "title": "Initiative"}, {"color": "#97c2fc", "id": "Fooddrives", "label": "Fooddrives", "shape": "dot", "size": 10, "title": "Food"}, {"color": "#97c2fc", "id": "Conclusion", "label": "Conclusion", "shape": "dot", "size": 10, "title": "Conclusion"}]);
+                  edges = new vis.DataSet([{"from": "Amico\u0027S Family", "label": "OWNED_BY", "to": "Restaurant", "width": 1}, {"from": "Amico\u0027S Family", "label": "OWNED_BY", "to": "Other Restaurant", "width": 1}, {"from": "Culinaryheritagefamily", "label": "SIMPLERELATIONSHIP", "to": "Gourmetchef", "width": 1}, {"from": "Culinaryheritagefamily", "label": "SIMPLERELATIONSHIP", "to": "Historicland", "width": 1}, {"from": "Food", "label": "RELATIONSHIP", "to": "Deepseatedloveforfood", "width": 1}, {"from": "Giovanni Caruso", "label": "BECAME_SON", "to": "Amico", "width": 1}, {"from": "Maria", "label": "BLEND", "to": "Giovanni", "width": 1}, {"from": "Maria", "label": "BECAME_CHILD", "to": "Antonio", "width": 1}, {"from": "Amico", "label": "INSTILLS", "to": "Pietroandsofia", "width": 1}, {"from": "Amico", "label": "TAUGHT", "to": "Nonnalucia", "width": 1}, {"from": "Amico", "label": "LEARNED", "to": "Grandchildren", "width": 1}, {"from": "Amico", "label": "INTEGRATES", "to": "Communityinvolvement", "width": 1}, {"from": "Giovanni", "label": "BECAME_MOTHER", "to": "Antonio", "width": 1}, {"from": "Siciliankitchen", "label": "PASS_DOWN", "to": "Siciliankitchens", "width": 1}, {"from": "Antonio", "label": "WORKS_IN", "to": "Village", "width": 1}, {"from": "Antonio", "label": "SERVES_AT", "to": "Wedding", "width": 1}, {"from": "Antonio", "label": "OVERTHERCEIVED", "to": "La Dolce Vita", "width": 1}, {"from": "Antonio", "label": "HOSTED_WORKSHOP", "to": "Caruso Family", "width": 1}, {"from": "Grandfeast", "label": "CREATED_BY", "to": "Dishcreation", "width": 1}, {"from": "Grandfeast", "label": "IS_A", "to": "Signaturestyle", "width": 1}, {"from": "Pietro", "label": "OFFERED_CLASS", "to": "Caruso Family", "width": 1}, {"from": "Sofia", "label": "CREATEDBY", "to": "Tiramisu", "width": 1}, {"from": "Sofia", "label": "CREATEDBY", "to": "Pannacotta", "width": 1}, {"from": "Sofia", "label": "VISITED", "to": "Restaurant", "width": 1}, {"from": "Sofia", "label": "OFFERED_CLASS", "to": "Caruso Family", "width": 1}, {"from": "Sicilianculture", "label": "INSTILLS", "to": "Pietroandsofia", "width": 1}, {"from": "Beyondthekitchen", "label": "SIMPLERELATIONSHIP", "to": "Shewasapillarofstrengthandwisdom", "width": 1}, {"from": "Beyondthekitchen", "label": "SIMPLERELATIONSHIP", "to": "Teachinglessonsaboutlifeloveandtheimportanceofcommunity", "width": 1}, {"from": "Shewasapillarofstrengthandwisdom", "label": "SIMPLERELATIONSHIP", "to": "Guidingherfamilywithloveandafirmhand", "width": 1}, {"from": "Caruso Family", "label": "GREW", "to": "Culinary Empire", "width": 1}, {"from": "Caruso Family", "label": "HONED_SKILLS", "to": "Caruso Family", "width": 1}, {"from": "Caruso Family", "label": "LIVED_IN", "to": "Santa Caterina Village", "width": 1}, {"from": "Caruso Family", "label": "RESIDED_IN", "to": "New York City", "width": 1}, {"from": "Caruso Family", "label": "BELIEVES_IN", "to": "Food Power", "width": 1}, {"from": "Caruso Family", "label": "BELIEVES_IN", "to": "Tradition", "width": 1}, {"from": "Caruso Family", "label": "BELIEVES_IN", "to": "Innovation", "width": 1}, {"from": "Italiancuisineestablishment", "label": "UNIFIED_BY", "to": "Diverseofferings", "width": 1}, {"from": "La_Dolce_Vita", "label": "OWNED_BY", "to": "Rome", "width": 1}, {"from": "Il_Mare_Nostrum", "label": "OWNED_BY", "to": "Amalfi_Coast", "width": 1}, {"from": "Vongole", "label": "BECAME_INSTANT_CLASSICS", "to": "Il Mare Nostrum", "width": 1}, {"from": "Tuscany", "label": "OWNED_BY", "to": "Sofia Caruso", "width": 1}, {"from": "Tuscancuisine", "label": "SERVES", "to": "Bisteccaallafiorentina", "width": 1}, {"from": "Tuscancuisine", "label": "SERVES", "to": "Pappardellealcinghiale", "width": 1}, {"from": "New York", "label": "HAS_SUBCATEGORY", "to": "Dining Scene", "width": 1}, {"from": "New York", "label": "HAS_SUBCATEGORY", "to": "Restaurants", "width": 1}, {"from": "Communityinitiative", "label": "PARTICIPATES", "to": "Culturalexchangeprogram", "width": 1}, {"from": "Culinaryworkshop", "label": "SIMPLERELATIONSHIP", "to": "Mentorshipprogram", "width": 1}, {"from": "Family", "label": "OFFERS_GUIDANCE", "to": "Mentorshipprograms", "width": 1}, {"from": "Family", "label": "WORKED_TOGETHER", "to": "Establishment", "width": 1}, {"from": "Family", "label": "COLLABORATEDWITH", "to": "Localtalent", "width": 1}, {"from": "Sustainability", "label": "WORKED_TOGETHER", "to": "Economic_Sustainability", "width": 1}, {"from": "Seasonal Produce", "label": "IS_FROM_SEASON", "to": "Organic Produce", "width": 1}, {"from": "Communitykitchens", "label": "ESTABLISHED_FACILITY", "to": "Foodforallinitiative", "width": 1}, {"from": "Caruso", "label": "LAUNCHED_INITIATIVE", "to": "Foodforallinitiative", "width": 1}, {"from": "Contributingskill", "label": "RELATIONSHIP_TYPE", "to": "Resources", "width": 1}, {"from": "Cultural_Festival", "label": "PARTICIPATES", "to": "Festive_Event", "width": 1}, {"from": "Carusos", "label": "SIMPLERELATIONSHIP", "to": "Culturalfestival", "width": 1}, {"from": "Carusos", "label": "SIMPLERELATIONSHIP", "to": "Culinaryfestival", "width": 1}, {"from": "Cuisine", "label": "HAS_EVENT", "to": "Festival", "width": 1}, {"from": "Liveperformance", "label": "HAS_ACTIVITY", "to": "Cookingdemonstration", "width": 1}, {"from": "Liveperformance", "label": "PARTICIPATES_IN", "to": "Artisanmarket", "width": 1}, {"from": "Background", "label": "JOIN_COMMUNITY", "to": "Community", "width": 1}, {"from": "Localartist", "label": "ARTIST", "to": "Artisan", "width": 1}, {"from": "Visualarts", "label": "COLLABORATEDWITH", "to": "Musiciansandperformers", "width": 1}, {"from": "Familymember1", "label": "RELATIONSHIPTYPE", "to": "Background1", "width": 1}, {"from": "Familymember1", "label": "RELATIONSHIPTYPE", "to": "Talents1", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
